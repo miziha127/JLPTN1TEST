@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JLPT N1 错题复盘</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="is-loading">
+    <div id="preloader" class="preloader" aria-live="polite" aria-label="页面载入中">
+      <div class="preloader-panel preloader-panel-a"></div>
+      <div class="preloader-panel preloader-panel-b"></div>
+      <div class="preloader-content">
+        <span class="preloader-label">loading review archive...</span>
+        <strong id="loadPercent">0%</strong>
+        <div class="preloader-track">
+          <span id="loadBar"></span>
+        </div>
+      </div>
+      <div class="preloader-links" aria-hidden="true">
+        <span>Cards</span>
+        <span>Import</span>
+        <span>Table</span>
+      </div>
+    </div>
+
+    <div id="entryFrame" class="entry-frame" aria-hidden="true">
+      <span class="frame-corner corner-tl"></span>
+      <span class="frame-corner corner-tr"></span>
+      <span class="frame-corner corner-bl"></span>
+      <span class="frame-corner corner-br"></span>
+      <div class="entry-frame-label">
+        <span>N1 REVIEW</span>
+        <span>米子哈的秘密复盘</span>
+      </div>
+      <div class="entry-frame-clock">01:09</div>
+    </div>
+
+    <canvas id="ambient" aria-hidden="true"></canvas>
+
+    <header class="topbar">
+      <a class="brand" href="#welcome" aria-label="返回欢迎页">
+        <span class="brand-mark">N1</span>
+        <span>错题复盘</span>
+      </a>
+      <nav class="nav">
+        <a href="#portal">入口</a>
+        <a href="#cards">卡片</a>
+        <a href="#import">导入</a>
+        <a href="#table">表格</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="welcome" class="welcome" aria-labelledby="welcome-title">
+        <div class="welcome-line" aria-hidden="true"></div>
+        <p class="welcome-kicker">JLPT N1 Private Review</p>
+        <h1 id="welcome-title">Welcome to Study</h1>
+      </section>
+
+      <section id="portal" class="portal" aria-labelledby="portal-title">
+        <p class="eyebrow">米子哈的秘密复盘</p>
+        <h2 id="portal-title">选择今天要进入的区域</h2>
+        <div class="portal-grid">
+          <a class="portal-card" href="#cards">
+            <span>Cards</span>
+            <strong>错题卡片</strong>
+            <small>快速浏览考点、读音和易错点</small>
+          </a>
+          <a class="portal-card" href="#import">
+            <span>Import</span>
+            <strong>截图导入</strong>
+            <small>批量加入新的错题截图</small>
+          </a>
+          <a class="portal-card" href="#table">
+            <span>Table</span>
+            <strong>复盘总表</strong>
+            <small>按表格回看全部错题</small>
+          </a>
+        </div>
+      </section>
+
+      <section id="home" class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">JLPT N1 Review System</p>
+          <h1 id="page-title">米子哈的秘密复盘</h1>
+        </div>
+        <p class="hero-copy">
+          悬停卡片快速查看考点和易错点，点击进入完整分析。后续上传截图后，我会把真实题目整理进这里。
+        </p>
+      </section>
+
+      <section class="controls" aria-label="筛选错题">
+        <label class="search">
+          <span>搜索</span>
+          <input id="searchInput" type="search" placeholder="题号、考点、关键词" autocomplete="off" />
+        </label>
+        <div class="segments" role="tablist" aria-label="题型筛选">
+          <button class="segment active" type="button" data-filter="all">全部</button>
+          <button class="segment" type="button" data-filter="文字词汇">文字词汇</button>
+          <button class="segment" type="button" data-filter="文法">文法</button>
+          <button class="segment" type="button" data-filter="读解">读解</button>
+          <button class="segment" type="button" data-filter="听解">听解</button>
+        </div>
+      </section>
+
+      <section id="cards">
+        <div class="section-head">
+          <h2>错题卡片</h2>
+          <span id="resultCount"></span>
+        </div>
+        <div id="cardGrid" class="card-grid" aria-live="polite"></div>
+      </section>
+
+      <section id="import" class="import-section" aria-labelledby="import-title">
+        <div class="section-head">
+          <h2 id="import-title">截图导入</h2>
+          <button id="exportImported" class="ghost-button" type="button">导出新增数据</button>
+        </div>
+        <div class="import-panel">
+          <div class="drop-zone">
+            <input id="screenshotInput" type="file" accept="image/*" multiple />
+            <div>
+              <strong>选择或拖入新的错题截图</strong>
+              <p>导入后会先生成“待分析”卡片，并保存在当前浏览器里。之后我可以继续帮你补齐考点和解析。</p>
+            </div>
+          </div>
+          <label class="import-type">
+            <span>默认题型</span>
+            <select id="importType">
+              <option>文字词汇</option>
+              <option>文法</option>
+              <option>读解</option>
+              <option>听解</option>
+            </select>
+          </label>
+          <div id="importPreview" class="import-preview" aria-live="polite"></div>
+          <div class="import-actions">
+            <button id="saveImported" class="primary-button" type="button">保存到错题卡片</button>
+            <button id="clearImported" class="ghost-button" type="button">清空本地新增</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="table" class="table-section" aria-labelledby="table-title">
+        <div class="section-head">
+          <h2 id="table-title">复盘总表</h2>
+          <button id="copyTable" class="ghost-button" type="button">复制表格</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>题号</th>
+                <th>题型</th>
+                <th>考点</th>
+                <th>错因</th>
+                <th>复盘</th>
+              </tr>
+            </thead>
+            <tbody id="reviewTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="detailDialog" class="detail-dialog">
+      <button class="close-button" type="button" aria-label="关闭详情">×</button>
+      <article id="detailContent"></article>
+    </dialog>
+
+    <script src="./questions.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
