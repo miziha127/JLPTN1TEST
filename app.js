@@ -25,6 +25,7 @@ const exportImportedButton = document.querySelector("#exportImported");
 const preloader = document.querySelector("#preloader");
 const loadPercent = document.querySelector("#loadPercent");
 const loadBar = document.querySelector("#loadBar");
+const countdownValues = document.querySelectorAll("[data-countdown-value]");
 
 const readingMap = {
   市民生活課: "しみんせいかつか",
@@ -145,6 +146,47 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function padNumber(value, size = 2) {
+  return String(value).padStart(size, "0");
+}
+
+function setCountdownValue(element, value) {
+  if (element.textContent === value) return;
+  element.textContent = value;
+  element.classList.remove("is-flipping");
+  void element.offsetWidth;
+  element.classList.add("is-flipping");
+}
+
+function startExamCountdown() {
+  if (!countdownValues.length) return;
+
+  const target = new Date("2026-07-05T00:00:00+09:00").getTime();
+
+  function updateCountdown() {
+    const remaining = Math.max(0, target - Date.now());
+    const totalSeconds = Math.floor(remaining / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const values = {
+      days: padNumber(days, 2),
+      hours: padNumber(hours),
+      minutes: padNumber(minutes),
+      seconds: padNumber(seconds)
+    };
+
+    countdownValues.forEach((element) => {
+      setCountdownValue(element, values[element.dataset.countdownValue]);
+    });
+  }
+
+  updateCountdown();
+  window.setInterval(updateCountdown, 1000);
 }
 
 function annotateText(value) {
@@ -491,6 +533,7 @@ clearImportedButton.addEventListener("click", clearImportedMistakes);
 exportImportedButton.addEventListener("click", exportImportedMistakes);
 
 startPreloader();
+startExamCountdown();
 renderCards();
 renderTable();
 renderImportPreview();
